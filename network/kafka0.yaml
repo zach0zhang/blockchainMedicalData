@@ -1,0 +1,25 @@
+version: '2'
+
+networks:
+    byfn:
+    
+services:
+    kafka0:
+        extends:
+            file: base/kafka-base.yaml
+            service: kafka
+        container_name: kafka0
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka0
+            - KAFKA_BROKER_ID=1
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+        extra_hosts:
+            - "zookeeper0:192.168.70.20"
+            - "zookeeper1:192.168.70.44"
+            - "zookeeper2:192.168.70.22"
+            - "kafka0:192.168.70.20"
+            - "kafka1:192.168.70.44"
+            - "kafka2:192.168.70.22"
+            - "kafka3:192.168.70.43"
+        networks:
+            - byfn

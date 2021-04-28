@@ -1,0 +1,47 @@
+//get all doctor
+query getAllDoctor{
+description: "list all the doctor"
+statement:
+      SELECT org.example.mynetwork.Doctor
+      FROM org.example.mynetwork.Doctor
+}
+
+//search Doctor
+query searchDoctor{
+description: "search the Doctor"
+statement:
+      SELECT org.example.mynetwork.Doctor
+      WHERE (doctorId == _$DoctorId)
+}
+
+//get ay Doctor
+query getMyDoctor{
+description: "get my Doctor"
+statement:
+      SELECT org.example.mynetwork.Doctor
+      WHERE (myPatients CONTAINS _$patient)
+}
+
+//get medical record of patient
+query getMedicalRecordOfPatient{
+description: "get medical record of patient"
+statement:
+      SELECT org.example.mynetwork.MedicalRecord
+      WHERE (owner == _$patientId)
+}
+
+//get my labs
+query getMyLabs{
+description: "get my labs"
+statement:
+      SELECT org.example.mynetwork.Lab
+      WHERE (myPatients CONTAINS _$patient)
+}
+
+//get all labs
+query getAllLabs{
+description: "list all the Labs"
+statement:
+      SELECT org.example.mynetwork.Lab
+      FROM org.example.mynetwork.Lab
+}

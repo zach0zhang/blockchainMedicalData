@@ -1,0 +1,90 @@
+namespace org.example.mynetwork
+
+enum Gender {
+  o male
+  o female
+  o other
+}
+
+participant Patient identified by patientId {
+  o String patientId
+  o String name
+  o Gender gender optional
+  o String address optional
+}
+
+participant Doctor identified by doctorId {
+  o String doctorId
+  o String name
+  o String registrationNumber
+  o Gender gender optional
+  o String address optional
+  --> Patient[] myPatients optional
+}
+
+participant Lab identified by labId {
+  o String labId
+  o String name
+  o String address
+  --> Patient[] myPatients optional
+}
+
+concept MedicalData {
+  o String medicalDataId
+  o String description
+  o String time
+}
+
+asset MedicalRecord identified by recordId {
+  o String recordId
+  o MedicalData[] medicalHistory
+  o String allergies optional
+  o String currentMedication optional
+  o String lastConsultationWith optional
+  o String lastConsultationDate optional
+  o Boolean smoking optional
+  --> Patient owner
+  --> Doctor[] authorisedDoctors optional
+  --> Lab[] authorisedLabs optional
+}
+
+transaction GrantAccessToDoctor {
+  --> Doctor authorisedToModify
+  --> MedicalRecord medicalRecord
+}
+
+transaction RevokeAccessFromDoctor {
+  --> Doctor revokeThisDoctor
+  --> MedicalRecord medicalRecord
+}
+
+transaction GrantAccessToLab {
+  --> Lab addThislab
+  --> MedicalRecord medicalRecord
+}
+
+transaction RevokeAccessFromLab {
+  --> Lab revokeThisLab
+  --> MedicalRecord medicalRecord
+}
+
+transaction CreateMedicalRecord {
+  o String allergies optional
+  o String currentMedication optional
+  o String lastConsultationWith optional
+  o String lastConsultationDate optional
+  --> Patient owner
+}
+
+transaction UpdateMedicalRecord {
+  o String medicalDataId
+  o String description
+  o String time
+  o String allergies optional
+  o String currentMedication optional
+  o String lastConsultationWith optional
+  o String lastConsultationDate optional
+  --> MedicalRecord medicalRecord
+}
+
+

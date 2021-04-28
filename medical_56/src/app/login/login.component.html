@@ -1,0 +1,9 @@
+<p>
+  login works!
+</p>
+
+<div class="file-dialog" *ngIf="!_busy">
+  <div class="upload-field">
+    <input type="file" #fileInput (change)="onFileChange($event.target.files)" />
+  </div>
+</div>

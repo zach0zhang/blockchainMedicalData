@@ -1,0 +1,27 @@
+<h1>
+  medical-detail works!
+</h1>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-responsive">
+      <thead class="thead">
+        <tr class="thead-cols">
+
+          <th class="info">medicalDataId</th>
+          <th class="info">description</th>
+          <th class="info">time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let medicalData of medicalRecord.medicalHistory">
+          <td class="medicalData-properties">{{medicalData.medicalDataId}}</td>
+          <td class="medicalData-properties">{{medicalData.description}}</td>
+          <td class="medicalData-properties">{{medicalData.time}}</td>
+        </tr>
+      </tbody>
+      
+    </table>
+  </div>    
+</div>
+
+<button (click)="goBack()">go back</button>

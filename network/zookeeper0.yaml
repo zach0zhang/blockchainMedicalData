@@ -1,0 +1,20 @@
+version: '2'
+
+networks:
+    byfn:
+    
+services:
+    zookeeper0:
+        extends:
+            file: base/kafka-base.yaml
+            service: zookeeper
+        container_name: zookeeper0
+        environment:
+            ZOO_MY_ID: 1
+            ZOO_SERVERS: server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+        extra_hosts:
+            - "zookeeper0:0.0.0.0"
+            - "zookeeper1:192.168.70.21"
+            - "zookeeper2:192.168.70.22"
+        networks:
+            - byfn

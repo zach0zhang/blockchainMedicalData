@@ -1,0 +1,203 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Sample access control list.
+ */
+rule SystemACL {
+    description:  "System ACL to permit all access"
+    participant: "org.hyperledger.composer.system.Participant"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
+    action: ALLOW
+}
+
+rule R1a_DoctorSeeUpdateThemselvesOnly {
+  description: "Doctor can see and update their own record only"
+  participant(t): "org.example.mynetwork.Doctor"
+  operation: ALL
+  resource(v): "org.example.mynetwork.Doctor"
+  condition: (v.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule R1a_PatientSeeUpdateThemselvesOnly {
+  description: "Patient can see and update their own record only"
+  participant(t): "org.example.mynetwork.Patient"
+  operation: ALL
+  resource(v): "org.example.mynetwork.Patient"
+  condition: (v.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule R1a_LabSeeUpdateThemselvesOnly {
+  description: "Lab can see and update their own record only"
+  participant(t): "org.example.mynetwork.Lab"
+  operation: ALL
+  resource(v): "org.example.mynetwork.Lab"
+  condition: (v.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+
+rule R1b_EveryoneSeeAllLabs {
+  description: "everyone can see all labs"
+  participant: "ANY"
+  operation: READ, UPDATE
+  resource: "org.example.mynetwork.Lab"
+  action: ALLOW
+}
+
+rule R1b_EveryoneSeeAllDoctors {
+  description: "everyone can see all Doctors"
+  participant: "ANY"
+  operation: READ, UPDATE
+  resource: "org.example.mynetwork.Doctor"
+  action: ALLOW
+}
+
+rule R1b_DoctorSeeOnlyTheirPatients {
+   description: "A Doctor see only list of patients they are authorised to modify"
+   participant(h): "org.example.mynetwork.Doctor"
+   operation: READ
+   resource(m): "org.example.mynetwork.Patient"
+   condition: (
+     h.myPatients.some(function (patient) {
+        return patient.getIdentifier() === m.getIdentifier();  
+        } )
+   )
+   action: ALLOW
+}
+
+rule R1b_LabSeeOnlyTheirPatients {
+   description: "A Lab see only list of patients they are authorised to modify"
+   participant(h): "org.example.mynetwork.Lab"
+   operation: READ
+   resource(m): "org.example.mynetwork.Patient"
+   condition: (
+     h.myPatients.some(function (patient) {
+        return patient.getIdentifier() === m.getIdentifier();  
+        } )
+   )
+   action: ALLOW
+}
+
+
+rule R1c_PatientSeeCreateOwnMedicalRecord {
+  description: "Patient can see and create their own medical record only"
+  participant(t): "org.example.mynetwork.Patient"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.example.mynetwork.MedicalRecord"
+  condition: (v.owner.getIdentifier() == t.getIdentifier())
+  action: ALLOW
+}
+
+rule R1c_LimitAccessToAutorisedClinician {
+   description: "A Doctor may updates a medical record which they have permission"
+   participant(h): "org.example.mynetwork.Doctor"
+   operation: READ, UPDATE
+   resource(m): "org.example.mynetwork.MedicalRecord"
+   condition: (
+     m.authorisedDoctors.some(function (authorisedDoctor) {
+        return authorisedDoctor.getIdentifier() === h.getIdentifier();  
+        } )
+   )
+   action: ALLOW
+}
+
+rule R1c_LimitAccessToAutorisedLabs {
+   description: "A Lab may updates a medical record which they have permission"
+   participant(h): "org.example.mynetwork.Lab"
+   operation: READ
+   resource(m): "org.example.mynetwork.MedicalRecord"
+   condition: (
+     m.authorisedLabs.some(function (authorisedlab) {
+        return authorisedlab.getIdentifier() === h.getIdentifier();  
+        } )
+   )
+   action: ALLOW
+}
+
+
+
+rule GrantAccessTransaction {
+    description: "Allow all patient to submit grantAccess transactions"
+    participant: "org.example.mynetwork.Patient"
+    operation: ALL
+    resource: "org.example.mynetwork.GrantAccessToDoctor"
+    action: ALLOW
+}
+
+rule RevokeAccessTransaction {
+    description: "Allow all patient to submit RevokeAccess transactions"
+    participant: "org.example.mynetwork.Patient"
+    operation: ALL
+    resource: "org.example.mynetwork.RevokeAccessFromDoctor"
+    action: ALLOW
+}
+
+rule GrantAccessToLabTran {
+    description: "Allow all patient to submit grantAccess transactions"
+    participant: "org.example.mynetwork.Patient"
+    operation: ALL
+    resource: "org.example.mynetwork.GrantAccessToLab"
+    action: ALLOW
+}
+
+rule RevokeAccessLabTran {
+    description: "Allow all patient to submit RevokeAccess transactions"
+    participant: "org.example.mynetwork.Patient"
+    operation: ALL
+    resource: "org.example.mynetwork.RevokeAccessFromLab"
+    action: ALLOW
+}
+
+rule CreateMedicalRecord {
+  description: "Allow all patient to submit CreateMedicalRecord"
+  participant: "org.example.mynetwork.Patient"
+  operation: ALL
+  resource: "org.example.mynetwork.CreateMedicalRecord"
+  action: ALLOW
+}
+
+rule UpdateMedicalRecord {
+  description: "All Doctor who have permission to submit UpdateMedicalRecord"
+  participant(h): "org.example.mynetwork.Doctor"
+  operation:ALL
+  resource(m): "org.example.mynetwork.UpdateMedicalRecord"
+  condition: (
+     m.medicalRecord.authorisedDoctors.some(function (authorisedDoctor) {
+        return authorisedDoctor.getIdentifier() === h.getIdentifier();  
+        } )
+   )
+   action: ALLOW
+}
+
+

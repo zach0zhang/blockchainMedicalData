@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+    peer-base:
+        image: hyperledger/fabric-peer
+        restart: always
+        environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            # - CORE_PEER_NETWORKID=${CORE_PEER_NETWORKID}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_byfn
+            - FABRIC_LOGGING_SPEC=DEBUG
+            # - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+            # Configuring TLS for peers nodes
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        command: peer node start
+        extra_hosts:
+            - "orderer0.example.com:192.168.70.20"
+            - "orderer1.example.com:192.168.70.21"
+            - "orderer2.example.com:192.168.70.22"
+        volumes:
+            - /var/run/:/host/var/run/
+        ports:
+            - 7051:7051
+            - 7053:7053

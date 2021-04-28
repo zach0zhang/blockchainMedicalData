@@ -1,0 +1,28 @@
+version: '2'
+
+volumes:
+    orderer0.example.com:
+
+networks:
+    byfn:
+    
+services:    
+    orderer0.example.com:
+        extends:
+            file: base/orderer-base.yaml
+            service: orderer-base
+        container_name: orderer0.example.com
+        environment:
+            - ORDERER_HOST=orderer0.example.com
+            - CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]
+        volumes:
+            - ./crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/orderer/msp
+            - ./crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/:/var/hyperledger/orderer/tls
+            - orderer0.example.com:/var/hyperledger/production/orderer
+        extra_hosts:
+            - "kafka0:192.168.70.20"
+            - "kafka1:192.168.70.44"
+            - "kafka2:192.168.70.22"
+            - "kafka3:192.168.70.43"
+        networks:
+            - byfn

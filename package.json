@@ -1,0 +1,36 @@
+{
+  "engines": {
+    "composer": "^0.20.8"
+  },
+  "name": "medical_56",
+  "version": "0.0.1",
+  "description": "test for web",
+  "scripts": {
+    "prepublish": "mkdirp ./dist && composer archive create --sourceType dir --sourceName . -a ./dist/medical_56.bna",
+    "pretest": "npm run lint",
+    "lint": "eslint .",
+    "test": "nyc mocha -t 0 test/*.js && cucumber-js"
+  },
+  "keywords": [
+    "composer",
+    "composer-network"
+  ],
+  "author": "zach",
+  "email": "584191872@qq.com",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "composer-admin": "^0.20.8",
+    "composer-cli": "^0.20.8",
+    "composer-client": "^0.20.8",
+    "composer-common": "^0.20.8",
+    "composer-connector-embedded": "^0.20.8",
+    "composer-cucumber-steps": "^0.20.8",
+    "chai": "latest",
+    "chai-as-promised": "latest",
+    "cucumber": "^2.2.0",
+    "eslint": "latest",
+    "nyc": "latest",
+    "mkdirp": "latest",
+    "mocha": "latest"
+  }
+}

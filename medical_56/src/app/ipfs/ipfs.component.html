@@ -1,0 +1,16 @@
+<p>
+  ipfs works!
+</p>
+<p>
+  {{state}}
+</p>
+
+<div class="file-dialog" *ngIf="!_busy">
+  <div class="upload-field">
+    <input type="file" #fileInput (change)="onFileChange($event.target.files)" />
+  </div>
+</div>
+
+<div *ngIf="hash">
+  <p>{{hash}}</p>
+</div>
